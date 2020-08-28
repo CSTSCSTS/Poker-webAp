@@ -1,0 +1,19 @@
+#frame {
+	padding: 10px;
+	margin-bottom: 10px;
+	 border: 1px solid #333333
+}
+
+#title {
+	 color: red;
+	 font-size: 400%;
+	 text-align: center;
+}
+
+#form {
+  height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

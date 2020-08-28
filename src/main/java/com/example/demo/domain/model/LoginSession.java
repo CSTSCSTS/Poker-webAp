@@ -16,6 +16,7 @@ public class LoginSession implements Serializable {
 
 	private Integer userId;
 	private String userName;
+	private boolean isOauthUser;
 
 	public Optional<Integer> getUserId() {
 			return Optional.ofNullable(userId);

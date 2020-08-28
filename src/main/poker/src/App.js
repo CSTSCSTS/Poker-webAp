@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import './pokerStart.css';
 import logo from './logo.svg';
 import './App.css';
-import PokerField from './pokerField';
-import PokerStart from './pokerStart';
-import UserRegister from './userRegister'
-import SystemError from './systemError'
-import SessionTimeOut from './sessionTimeOut'
+import Potal from './Potal';
+import PokerField from './PokerField';
+import UserRegister from './UserRegister'
+import SystemError from './SystemError'
+import SessionTimeOut from './SessionTimeOut'
+import Forbidden from './forbidden'
 import CommonHeader from './commonHeader'
 import Bet from './bet';
 import { withRouter } from 'react-router';
@@ -14,6 +15,8 @@ import {BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 import { Button, Container, Row, Col, Form, FormGroup, Input } from 'reactstrap';
 import * as PokerConstNumber from './PokerConstNumber.js';
 import * as PokerConstMessage from './PokerConstMessage.js';
+import LoginServicePopUp from './LoginServicePopUp';
+import Modal from "react-modal";
 
 class App extends Component {
   render() {
@@ -21,11 +24,12 @@ class App extends Component {
       <BrowserRouter>
           <div>
             <Switch>
-              <Route exact path={'/'} component={Login}/>
+              <Route exact path={'/'} component={PokerStart}/>
+              <Route exact path={'/potal'} component={Potal}/>
               <Route exact path={'/user'} component={UserRegister}/>
-              <Route exact path={'/start'} component={PokerStart}/>
               <Route exact path={'/play'} component={PokerField}/>
               <Route exact path={'/error'} component={SystemError}/>
+              <Route exact path={'/forbidden'} component={Forbidden}/>
               <Route exact path={'/session-timeout'} component={SessionTimeOut}/>
             </Switch>
           </div>
@@ -34,116 +38,78 @@ class App extends Component {
   }
 }
 
-class Login extends Component {
+class PokerStart extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-    		userName: '',
-        password: '',
-        errorMessage: []
+      jokerIncluded: true
     };
   }
 
   handleSubmit(e) {
-    // リクエスト前に必須チェックを実施
-  	var errorList = [];
-
-  	this.NullOrEmptyCheck(errorList, this.state.userName, PokerConstMessage.userNameNotInputMessage);
-  	this.NullOrEmptyCheck(errorList, this.state.password, PokerConstMessage.passwordNotInputMessage);
-
-  	if(errorList.length != 0) {
-      this.setState({errorMessage: errorList});
-      return;
-    }
-
-	  var request = require('superagent');
+	var request = require('superagent');
     e.preventDefault();
-    const url = window.location + '/login';
+    const url = '/bet'
     request
-      .post(url)
-      .responseType('text')
-      .type('form')
-      .send({userName: this.state.userName, password: this.state.password})
-      .then(res => {
-      	this.props.history.push({
-      		pathname: '/start',
-      		// ログインがその日初めてかどうか情報をサーバー側で返してもらう
-      		state: {isOpen: res.body.isFirstLogin, userName: res.body.userName}
-      	});
-      })
-      .catch(err => {
-      	if(err.response.body.status === PokerConstNumber.UN_EXPECTED_ERROR_CODE) {
-        	// システムエラー画面へ遷移
-      		this.props.history.push({
-  				  pathname: '/error'
-  			  })
-      	}
-        errorList.push(err.response.body.message)
-        this.setState({errorMessage: errorList})
-			});
+    .get(url)
+    .responseType('text')
+    .then(res => {
+      this.handleToBet(res.body, this.state.jokerIncluded);
+    })
+    // システムエラー画面へ遷移
+    .catch(err => {
+    	if(err.response.body.status === PokerConstNumber.UN_AUTHORIZE_ERROR_CODE) {
+    		this.props.history.push({
+      		pathname: '/session-timeout'
+      	})
+      	return;
+    	}
+    	if(err.response.body.status === PokerConstNumber.UN_EXPECTED_ERROR_CODE) {
+    	  this.props.history.push({
+    		  pathname: '/error'
+    	  })
+    	  return;
+    	}
+    });
+
 
   }
-    usernameHandleChange(event) {
-      this.setState({userName: event.target.value});
+    handleToBet = (body, jokerIncluded) => {
+    	this.props.history.push({
+    		pathname: '/play',
+    		state: {betMoney: body, jokerIncluded: jokerIncluded}
+    	})
     }
 
-  	passwordHandleChange(event) {
-      this.setState({password: event.target.value});
-    }
-
-  // 必須チェック
-  NullOrEmptyCheck(errorList, value, errorMessage) {
-		if(!(value)) {
-			errorList.push(errorMessage);
-		}
-		return errorList;
-	}
+  handleChange(event) {
+	const jokerIncluded = event.target.value == 'included' ? true : false;
+    this.setState({jokerIncluded: jokerIncluded});
+  }
 
   render() {
     return (
       <div>
         <CommonHeader />
-      	<h1 id="title">茶 圓 ポ ー カ ーログイン</h1>
-	    <Container>
-	      <div>
-          {this.state.errorMessage.map((item) => (
-            <p class="alert alert-danger">{item}</p>
-          ))}
-        </div>
+        <LoginServicePopUp
+          isOpen={this.props.location.state === undefined ? false : this.props.location.state.isOpen}
+          username={this.props.location.state === undefined ? '' : this.props.location.state.userName}
+        />
+      	<h1 id="title">茶 圓 ポ ー カ ー</h1>
+	    <Container id="form">
 	      <Form>
-	        <Row>
-            <Col sm="12" md={{ size: 6, offset: 3 }}>
-	            <FormGroup>
-                <label>ユーザー名入力</label>
-                <Input type="text" onChange={this.usernameHandleChange.bind(this)}></Input>
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="12" md={{ size: 6, offset: 3 }}>
-            	<FormGroup>
-            		<label>パスワード入力</label>
-            		<Input type="password" onChange={this.passwordHandleChange.bind(this)}></Input>
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="12" md={{ size: 6, offset: 3 }}>
-	    	      <Button color="primary" size="lg" block onClick={this.handleSubmit.bind(this)}>ログイン</Button>
-	    	    </Col>
-	        </Row>
-	        <Row>
-            <Col sm="12" md={{ size: 6, offset: 3 }}>
-	            <Link to="/user">ユーザー登録はこちら</Link>
-	          </Col>
-	  	    </Row>
+	        <FormGroup>
+	          <Input type="select" onChange={this.handleChange.bind(this)} name="select" id="exampleSelect">
+	            <option value="included">ジョーカーを含む</option>
+	            <option value="non-included">ジョーカーを含まない</option>
+	          </Input>
+	        </FormGroup>
+	    	<Button color="primary" size="lg" block onClick={this.handleSubmit.bind(this)}>START</Button>
 	      </Form>
 	    </Container>
 	  </div>
     );
   }
-
 }
 
 export default App;

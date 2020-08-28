@@ -3,9 +3,13 @@ package com.example.demo.domain.model;
 import java.util.Arrays;
 import java.util.List;
 
+import com.example.demo.dto.RoleDto;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 @AllArgsConstructor
 public class Role {
@@ -65,6 +69,13 @@ public class Role {
 				getFullHouse(),
 				getFlush(),
 				getStraight());
+	}
+
+	public static Role ConvertToDomain(RoleDto dto) {
+   return Role.builder()
+   				.roleName(RoleName.valueOf(dto.getRoleName()))
+   				.roleNumber(dto.getRoleNumber())
+   				.build();
 	}
 
 }

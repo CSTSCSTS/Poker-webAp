@@ -3,6 +3,8 @@ package com.example.demo.domain.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.demo.dto.CardDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,5 +41,13 @@ public class Card {
 	    }
 			return deck;
 		}
+
+	public static Card ConvertToDomain(CardDto dto) {
+   return Card.builder()
+   				.type(CardType.valueOf(dto.getType()))
+   				.number(dto.getNumber())
+   				.isChange(dto.isChange())
+   				.build();
+	}
 
 }

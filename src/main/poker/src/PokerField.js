@@ -101,7 +101,7 @@ class PokerField extends Component {
   render() {
   	if(this.state.pokerPhase === 'BET') {
   		return (
-  		  <div>
+  		  <div class="poker">
   		    <Bet
   		      money={this.state.money}
   		      pokerPhaseChange={this.pokerPhaseChange}
@@ -113,7 +113,7 @@ class PokerField extends Component {
   		);
   	}
     return (
-      <div>
+      <div class="poker">
         <CommonHeader />
         <Container className="poker_field">
           <ul>
@@ -355,7 +355,12 @@ class PlayButton extends Component {
          		this.props.history.push({
            		pathname: '/session-timeout'
            	})
-       	}
+       	 }
+      	 if(err.response.body.status === PokerConstNumber.FORBIDDEN_ERROR_CODE) {
+        		this.props.history.push({
+          		pathname: '/forbidden'
+          	})
+      	 }
       	 if(err.response.body.status === PokerConstNumber.UN_EXPECTED_ERROR_CODE) {
         	 this.props.history.push({
         		 pathname: '/error'
@@ -478,7 +483,7 @@ class RestartButton extends Component {
 
 	handleToRestart = (body) => {
 		this.props.history.push({
-			pathname: '/start'
+			pathname: '/'
 		})
   }
   render() {

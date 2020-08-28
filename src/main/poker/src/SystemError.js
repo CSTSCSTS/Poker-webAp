@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Container } from 'reactstrap';
+import { Container, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 
@@ -11,9 +11,12 @@ class SystemError extends Component {
       <div>
       	<h1 id="title">茶 圓 ポ ー カ ー システムエラー</h1>
       	<Container id="form">
-	        <p>予期せぬエラーが発生しました</p>
-	        <p>恐れ入りますが、もう一度ログインしなおしてください。</p>
-	        <Link to="/">ログイン画面へ</Link>
+      	  <Row>
+	          <p>予期せぬエラーが発生しました</p>
+	        </Row>
+	        <Row>
+            <Link to="/">スタート画面へ</Link>
+          </Row>
 	      </Container>
 	    </div>
     );

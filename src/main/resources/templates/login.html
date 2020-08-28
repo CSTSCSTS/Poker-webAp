@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>OAuth2ログインページ</title>
+</head>
+<body>
+<h1>OAuth2ログインページ</h1>
+	<div align="center">
+    <table border="0">
+      <form action="/login" method="post">
+         <tr>
+           <th>
+             ユーザ名
+           </th>
+            <td>
+              <input type="text" name="userName" value="" size="24">
+            </td>
+          </tr>
+          <tr>
+             <th>
+               パスワード
+             </th>
+             <td>
+               <input type="password" name="password" value="" size="24">
+             </td>
+           </tr>
+            <tr>
+            <td colspan="2">
+              <input type="submit" value="ログイン">
+            </td>
+          </tr>
+         </form>
+       </table>
+<a th:href="@{/oauth2/authorization/keycloak}">Keycloakでログイン</a>
+</body>
+</html>

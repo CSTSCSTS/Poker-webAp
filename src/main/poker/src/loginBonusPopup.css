@@ -1,0 +1,16 @@
+#closeBunnton {
+	position: fixed;
+  top: 100px;
+  right: 100px;
+}
+
+#message {
+  height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Modal {
+  background: green;
+}

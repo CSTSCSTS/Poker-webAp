@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 public class User {
 
 	public int userId;
-	public final String userName;
-	public final String password;
+	public String userName;
+	public String password;
 	public LocalDateTime loginDate;
 
 }

@@ -1,0 +1,10 @@
+#ranking {
+  margin: 0 auto;
+}
+
+
+#closeBunnton {
+	position: fixed;
+  top: 100px;
+  right: 100px;
+}

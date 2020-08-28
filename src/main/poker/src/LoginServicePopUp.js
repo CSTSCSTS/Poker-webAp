@@ -8,7 +8,7 @@ class LoginBonusPopup extends Component {
     super(props);
     this.state = {
       isOpen: this.props.isOpen,
-      user: this.props.user
+      userName: this.props.userName
     };
   }
 
@@ -22,7 +22,7 @@ class LoginBonusPopup extends Component {
         <Modal
           isOpen={this.state.isOpen}
         >
-         {this.state.user.userName}さん本日初ログインです。100円贈呈します。
+         {this.state.userName}さん本日初ログインです。100円贈呈します。
         <Button id="closeBunnton" onClick={this.handleToClose.bind(this)}>閉じる</Button>
       </Modal>
 
